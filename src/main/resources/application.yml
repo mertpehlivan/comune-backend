@@ -1,0 +1,34 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  application:
+    name:comune
+  :datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/comune
+    username: postgres
+    password: 123
+    hikari:
+      data-source-properties:
+        serverTimezone: UTC
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      javax.persistence.validation.mode: update
+
+
+springdoc:
+  api-docs:
+    path: /api/v1/no-auth/api-docs
+  swagger-ui:
+    path: /api/v1/no-auth/swagger-ui-custom.html
+    persist-authorization: true
+
+
