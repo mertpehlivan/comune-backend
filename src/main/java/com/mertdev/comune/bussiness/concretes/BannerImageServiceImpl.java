@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BannerImageServiceImpl implements BannerImageService {
@@ -15,5 +17,21 @@ public class BannerImageServiceImpl implements BannerImageService {
     @Override
     public void create(BannerImage bannerImage) throws IOException {
         bannerImageRepository.save(bannerImage);
+    }
+
+    @Override
+    public BannerImage update(BannerImage profileImage) {
+        Optional<BannerImage> existingImage = bannerImageRepository.findByAccountId(profileImage.getAccount().getId());
+        if (existingImage.isPresent()) {
+
+            BannerImage existing = existingImage.get();
+            existing.setData(profileImage.getData());
+            existing.setFilename(profileImage.getFilename());
+            existing.setMimeType(profileImage.getMimeType());
+            return bannerImageRepository.save(existing);
+        } else {
+            // Eğer aynı account_id'ye sahip bir kayıt yoksa, yeni bir kayıt ekliyoruz
+            return bannerImageRepository.save(profileImage);
+        }
     }
 }

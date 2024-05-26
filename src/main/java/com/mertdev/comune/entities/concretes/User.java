@@ -37,6 +37,9 @@ public class User extends AccountAbstract implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<UserCommunityRole> communityRoles;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Message> messages;
+
     private String location;
 
 

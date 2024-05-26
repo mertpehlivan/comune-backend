@@ -20,4 +20,6 @@ public interface PublicationService {
     List<PublicationResponse> getAllPublicationToUser();
 
     List<PublicationResponse> findByCommunityIdOrderByCreatedOnDesc(UUID id);
+
+    List<PublicationResponse> findByUserIdOrderByCreatedAtDesc(UUID userId);
 }

@@ -2,6 +2,7 @@ package com.mertdev.comune.bussiness.abstracts;
 
 import com.mertdev.comune.bussiness.requests.UpdateUserRoleRequest;
 import com.mertdev.comune.bussiness.responses.CommunityUserRoleResponse;
+import com.mertdev.comune.entities.concretes.UserCommunityRole;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,4 +19,6 @@ public interface UserCommunityRoleService {
     List<CommunityUserRoleResponse> findByCommunityIdAndRole(UUID communityId);
 
     List<CommunityUserRoleResponse> findByCommunityIdAndRoleNotRequest(UUID communityId);
+
+    List<UserCommunityRole> findByUserId(UUID userId);
 }

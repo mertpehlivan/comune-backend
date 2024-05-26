@@ -15,6 +15,7 @@ public class UpdateCommunityRequest {
     private Privacy privacy;
     private String aboutUs;
     private CommunityShareRole communityShareRole;
+
     private MultipartFile bannerImage;
     private MultipartFile profileImage;
 }

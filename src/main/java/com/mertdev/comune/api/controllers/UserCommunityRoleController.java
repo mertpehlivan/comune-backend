@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/user-community-roles")
+@RequestMapping("/api/v1/user-community-roles")
 @RequiredArgsConstructor
 public class UserCommunityRoleController {
     private final UserCommunityRoleService userCommunityRoleService;
@@ -51,4 +51,10 @@ public class UserCommunityRoleController {
         List<CommunityUserRoleResponse> responses = userCommunityRoleService.findByCommunityIdAndRoleNotRequest(communityId);
         return ResponseEntity.ok(responses);
     }
+    @ExceptionHandler(Exception.class)
+    public String exceptionHandler(Exception exception){
+        return exception.getMessage();
+    }
+
+
 }

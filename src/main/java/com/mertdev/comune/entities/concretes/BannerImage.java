@@ -17,7 +17,7 @@ public class BannerImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String filename;
 

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProfileImage{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String filename;
 

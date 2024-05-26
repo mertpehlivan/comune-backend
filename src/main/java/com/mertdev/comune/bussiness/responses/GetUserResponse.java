@@ -21,4 +21,5 @@ public class GetUserResponse implements AccountResponse {
     private String bannerImageUrl;
     private List<String> likes;
     private List<String> dislike;
+    private List<UserRoleResponse> roles;
 }

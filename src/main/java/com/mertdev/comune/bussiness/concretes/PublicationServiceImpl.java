@@ -9,11 +9,9 @@ import com.mertdev.comune.entities.abstracts.AccountAbstract;
 import com.mertdev.comune.entities.abstracts.Publication;
 import com.mertdev.comune.entities.concretes.Dislike;
 import com.mertdev.comune.entities.concretes.Like;
-import com.mertdev.comune.entities.concretes.User;
 import com.mertdev.comune.mappers.PublicationMappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +106,19 @@ public class PublicationServiceImpl implements PublicationService {
     public List<PublicationResponse> findByCommunityIdOrderByCreatedOnDesc(UUID communityId) {
         AccountAbstract user = accountService.getAccount();
         List<Publication> publications = publicationRepository.findByCommunityIdOrderByCreatedOnDesc(communityId);
+        List<PublicationResponse> responses = new ArrayList<>();
+
+        for (Publication publication : publications){
+            responses.add(publicationMappers.mapToPbPublicationResponse(publication));
+        }
+        System.out.println(responses);
+
+        return responses;
+    }
+    @Override
+    public List<PublicationResponse> findByUserIdOrderByCreatedAtDesc(UUID userId) {
+        AccountAbstract user = accountService.getAccount();
+        List<Publication> publications = publicationRepository.findByUserIdOrderByCreatedAtDesc(userId);
         List<PublicationResponse> responses = new ArrayList<>();
 
         for (Publication publication : publications){

@@ -7,4 +7,5 @@ import java.io.IOException;
 
 public interface ProfileImageService {
     void create(ProfileImage profileImage) throws IOException;
+    ProfileImage update(ProfileImage profileImage);
 }

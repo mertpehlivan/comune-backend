@@ -14,6 +14,7 @@ import com.mertdev.comune.entities.concretes.UserCommunityRole;
 import com.mertdev.comune.mappers.UserCommunityRoleMappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,15 +27,22 @@ public class UserCommunityRoleServiceImpl implements UserCommunityRoleService {
     private final CommunityService communityService;
     private final AccountService accountService;
     private final UserCommunityRoleMappers userCommunityRoleMappers;
+    @Transactional
     @Override
     public void create(UUID communityId) {
         var community = communityService.findById(communityId);
         var user = (User) accountService.getAccount();
 
+        if (community == null || user == null) {
+            // Gerekli nesnelerden biri null ise işlemi durdur
+            throw new IllegalArgumentException("Community or user not found");
+        }
+
         CommunityRole role = (community.getPrivacy() == Privacy.PUBLIC)
                 ? CommunityRole.MEMBERS
                 : CommunityRole.REQUEST;
 
+        // UserCommunityRole kaydını oluştur ve veritabanına kaydet
         userCommunityRoleRepository.save(
                 UserCommunityRole.builder()
                         .role(role)
@@ -42,7 +50,6 @@ public class UserCommunityRoleServiceImpl implements UserCommunityRoleService {
                         .user(user)
                         .build()
         );
-
     }
 
     @Override
@@ -80,6 +87,11 @@ public class UserCommunityRoleServiceImpl implements UserCommunityRoleService {
                 .findByCommunityIdAndRoleNot(communityId,CommunityRole.REQUEST).stream()
                 .map(userCommunityRoleMappers::mapToCommunityUserRoleResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserCommunityRole> findByUserId(UUID userId) {
+        return userCommunityRoleRepository.findByUserId(userId);
     }
 
 }

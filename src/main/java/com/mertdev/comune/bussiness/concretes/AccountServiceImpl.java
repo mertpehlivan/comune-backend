@@ -5,7 +5,11 @@ import com.mertdev.comune.bussiness.abstracts.CommunityService;
 import com.mertdev.comune.bussiness.abstracts.UserService;
 import com.mertdev.comune.bussiness.responses.abstacts.AccountResponse;
 
+import com.mertdev.comune.dataAccess.abstracts.CommunityRepository;
+import com.mertdev.comune.dataAccess.abstracts.UserRepository;
 import com.mertdev.comune.entities.abstracts.AccountAbstract;
+import com.mertdev.comune.entities.concretes.Community;
+import com.mertdev.comune.entities.concretes.User;
 import com.mertdev.comune.mappers.CommunityMappers;
 import com.mertdev.comune.mappers.UserMappers;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    private final UserService userService;
-    private final CommunityService communityService;
+    private final UserRepository userRepository;
+    private final CommunityRepository communityRepository;
     private final UserMappers userMappers;
     private final CommunityMappers communityMappers;
     private String getEmailAccount(){
@@ -32,21 +38,23 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountAbstract getAccount() {
         String email = getEmailAccount();
-        AccountAbstract account = userService.findUserByEmailToUser(email);
+        Optional<User> user = userRepository.findByEmail(email);
 
-        if (account == null) {
-            account = communityService.findCommunityByEmailToCommunity(email);
+        if (user.isPresent()) {
+            return user.get();
+
         }
-        return account;
+        Optional<Community> community = communityRepository.findByEmail(email);
+        return community.orElse(null);
     }
     @Override
     public AccountResponse getAccountResponse(String email){
         try {
             return userMappers
-                    .toGetUserResponse(userService.findUserByEmailToUser(email));
+                    .toGetUserResponse(userRepository.findByEmail(email).get());
         }catch (Exception exception){
             return communityMappers
-                    .mapToGetCommunityResponse(communityService.findCommunityByEmailToCommunity(email)) ;
+                    .mapToGetCommunityResponse(communityRepository.findByEmail(email).get()) ;
         }
     }
     @Override
@@ -54,10 +62,10 @@ public class AccountServiceImpl implements AccountService {
         String email = getEmailAccount();
         try {
             return userMappers
-                    .toGetUserResponse(userService.findUserByEmailToUser(email));
+                    .toGetUserResponse(userRepository.findByEmail(email).get());
         }catch (Exception exception){
             return communityMappers
-                    .mapToGetCommunityResponse(communityService.findCommunityByEmailToCommunity(email)) ;
+                    .mapToGetCommunityResponse(communityRepository.findByEmail(email).get()) ;
         }
     }
 }

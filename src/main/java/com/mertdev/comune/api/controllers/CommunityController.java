@@ -5,9 +5,11 @@ import com.mertdev.comune.bussiness.abstracts.CommunityService;
 import com.mertdev.comune.bussiness.requests.UpdateCommunityRequest;
 import com.mertdev.comune.bussiness.responses.ExceptionResponse;
 import com.mertdev.comune.bussiness.responses.GetCommunityResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -23,7 +25,18 @@ public class CommunityController {
     }
 
     @PutMapping("/privacy")
-    public void updateCommunity(@ModelAttribute UpdateCommunityRequest updateCommunityRequest) throws IOException {
+    public void updateCommunity( @Valid @ModelAttribute UpdateCommunityRequest updateCommunityRequest,
+                                 @RequestParam(value = "bannerImage", required = false) MultipartFile bannerImage,
+                                 @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+
+        if (bannerImage != null && !bannerImage.isEmpty()) {
+            updateCommunityRequest.setBannerImage(bannerImage);
+        }
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            updateCommunityRequest.setProfileImage(profileImage);
+        }
+
         communityService.updateCommunitySettings(updateCommunityRequest);
     }
 

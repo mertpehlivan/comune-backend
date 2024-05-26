@@ -2,18 +2,16 @@ package com.mertdev.comune.bussiness.concretes;
 
 import com.mertdev.comune.Exceptions.UnavailableEmailException;
 import com.mertdev.comune.Exceptions.AccountNotFoundException;
-import com.mertdev.comune.bussiness.abstracts.BannerImageService;
-import com.mertdev.comune.bussiness.abstracts.ProfileImageService;
-import com.mertdev.comune.bussiness.abstracts.UserService;
+import com.mertdev.comune.bussiness.abstracts.*;
 import com.mertdev.comune.bussiness.requests.CreateUserRequest;
+import com.mertdev.comune.bussiness.requests.UpdateUserRequest;
 import com.mertdev.comune.bussiness.responses.CreatedUserResponse;
+import com.mertdev.comune.bussiness.responses.GetCommunityResponse;
 import com.mertdev.comune.bussiness.responses.GetUserResponse;
-import com.mertdev.comune.dataAccess.abstracts.BannerImageRepository;
-import com.mertdev.comune.dataAccess.abstracts.ProfileImageRepository;
 import com.mertdev.comune.dataAccess.abstracts.UserRepository;
-import com.mertdev.comune.entities.concretes.BannerImage;
-import com.mertdev.comune.entities.concretes.ProfileImage;
 import com.mertdev.comune.entities.concretes.User;
+import com.mertdev.comune.entities.concretes.UserCommunityRole;
+import com.mertdev.comune.mappers.CommunityMappers;
 import com.mertdev.comune.mappers.ImageMappers;
 import com.mertdev.comune.mappers.UserMappers;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -32,7 +32,9 @@ public class UserServiceImpl implements UserService {
     private final ProfileImageService profileImageService;
     private final BannerImageService bannerImageService;
     private final ImageMappers imageMappers;
-
+    private final AccountService accountService;
+    private final CommunityMappers communityMappers;
+    private final UserCommunityRoleService userCommunityRoleService;
     @Override
     public CreatedUserResponse create(CreateUserRequest createUserRequest) {
         try {
@@ -100,5 +102,30 @@ public class UserServiceImpl implements UserService {
                 return null;
             }
 
+    }
+
+    @Override
+    public void updateUserSettings(UpdateUserRequest updateUserRequest) throws IOException {
+        Optional<User> user =  userRepository.findById(updateUserRequest.getUserId());
+        if (updateUserRequest.getProfileImage() != null && !updateUserRequest.getProfileImage().isEmpty()) {
+            profileImageService.update(
+                    imageMappers.mapToProfileImage(updateUserRequest.getProfileImage(), user.get())
+            );
+        }
+
+        if (updateUserRequest.getBannerImage() != null && !updateUserRequest.getBannerImage().isEmpty()) {
+            bannerImageService.update(
+                    imageMappers.mapToBannerImage(updateUserRequest.getBannerImage(), user.get())
+            );
+        }
+    }
+    @Override
+    public List<GetCommunityResponse> getUserCommunities(){
+        User user = (User) accountService.getAccount();
+        List<UserCommunityRole> communityRoles = userCommunityRoleService.findByUserId(user.getId());
+        return communityRoles.stream().map(userCommunityRole -> {
+                   return communityMappers.mapToGetCommunityResponse(userCommunityRole.getCommunity());
+                })
+                .collect(Collectors.toList());
     }
 }

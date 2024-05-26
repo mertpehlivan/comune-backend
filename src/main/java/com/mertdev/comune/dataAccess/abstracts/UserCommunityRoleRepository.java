@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface UserCommunityRoleRepository extends JpaRepository<UserCommunityRole,Long> {
     List<UserCommunityRole> findByCommunityIdAndRole(UUID communityId, CommunityRole role);
-
+    List<UserCommunityRole> findByUserId(UUID userId);
     @Query("SELECT ucr FROM UserCommunityRole ucr WHERE ucr.community.id = :communityId AND ucr.role <> :role")
     List<UserCommunityRole> findByCommunityIdAndRoleNot(UUID communityId, CommunityRole role);
 }

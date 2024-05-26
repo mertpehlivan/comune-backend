@@ -19,6 +19,10 @@ public class PublicationController {
     public List<PublicationResponse> findByCommunityIdOrderByCreatedOnDesc(@PathVariable UUID communityId){
         return publicationService.findByCommunityIdOrderByCreatedOnDesc(communityId);
     }
+    @GetMapping("user/{userId}")
+    public List<PublicationResponse> findByUserIdOrderByCreatedAtDesc(@PathVariable UUID userId){
+        return publicationService.findByUserIdOrderByCreatedAtDesc(userId);
+    }
 
     @GetMapping("/{publicationId}/like")
     public void likePublication(@PathVariable UUID publicationId) {

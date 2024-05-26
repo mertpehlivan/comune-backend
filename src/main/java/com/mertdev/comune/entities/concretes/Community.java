@@ -49,6 +49,9 @@ public class Community extends AccountAbstract implements UserDetails {
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private Set<UserCommunityRole> userRoles;
 
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    private Set<Message> messages;
+
     private String location;
 
     @Override

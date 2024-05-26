@@ -35,7 +35,7 @@ public class CommunityServiceImpl implements CommunityService {
     public CreatedCommunityResponse create(CreateCommunityRequest createUserRequest) throws IOException {
             var community =communityRepository.save(communityMappers.mapToUser(createUserRequest)) ;
 
-            profileImageService.create(
+            profileImageService.update(
                     imageMappers.mapToProfileImage(
                             createUserRequest.getProfileImage(),community
                     )
@@ -108,16 +108,17 @@ public class CommunityServiceImpl implements CommunityService {
         community.setPrivacy(updateCommunityRequest.getPrivacy());
         community.setCommunityShareRole(updateCommunityRequest.getCommunityShareRole());
         community.setAboutUs(updateCommunityRequest.getAboutUs());
+
         communityRepository.save(community);
 
         if (updateCommunityRequest.getProfileImage() != null && !updateCommunityRequest.getProfileImage().isEmpty()) {
-            profileImageService.create(
+            profileImageService.update(
                     imageMappers.mapToProfileImage(updateCommunityRequest.getProfileImage(), community)
             );
         }
 
         if (updateCommunityRequest.getBannerImage() != null && !updateCommunityRequest.getBannerImage().isEmpty()) {
-            bannerImageService.create(
+            bannerImageService.update(
                     imageMappers.mapToBannerImage(updateCommunityRequest.getBannerImage(), community)
             );
         }
